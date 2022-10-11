@@ -28,6 +28,9 @@ extern "C" {
 #define LMASK(bits, size) \
     ((bits) & LSHIFT(SFP_MASK, SFP_WIDTH - (size)))
 
+#define LHIDE(bits, size) \
+    ((bits) & RSHIFT(SFP_MASK, size))
+
 #define HIDDEN_BIT(frac) \
     (SFP_MSB | RSHIFT((frac), 1))
 

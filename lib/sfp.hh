@@ -18,10 +18,16 @@ public:
     bool isNeg() const;
 
     int nBits() const;
+    int bias() const;
 
     SFP zero() const;
+    SFP absMax() const;
+    SFP absMin() const;
+    SFP max() const;
+    SFP min() const;
 
     SFP neg() const;
+    SFP abs() const;
 
     SFP add(const SFP& p) const;        // x + p
     SFP sub(const SFP& p) const;        // x - p
