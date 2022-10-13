@@ -1,7 +1,7 @@
 #ifndef __SFP_HH
 #define __SFP_HH
 
-#include "sfp_types.hh"
+#include "sfp_types.h"
 
 class SFP
 {
@@ -19,6 +19,9 @@ public:
 
     int nBits() const;
     int bias() const;
+    bool sign() const;
+    SFP_STYPE exp() const;
+    SFP_UTYPE frac() const;
 
     SFP zero() const;
     SFP absMax() const;
@@ -29,18 +32,18 @@ public:
     SFP neg() const;
     SFP abs() const;
 
-    SFP add(const SFP& p) const;        // x + p
-    SFP sub(const SFP& p) const;        // x - p
-    SFP mul(const SFP& p) const;        // x * p
-    SFP div(const SFP& p) const;        // x / p
+    SFP add(const SFP& s) const;        // x + s
+    SFP sub(const SFP& s) const;        // x - s
+    SFP mul(const SFP& s) const;        // x * s
+    SFP div(const SFP& s) const;        // x / s
 
-    bool eq(const SFP& p) const;        // x == p
-    bool gt(const SFP& p) const;        // x > p
-    bool ge(const SFP& p) const;        // x >= p
-    bool lt(const SFP& p) const;        // x < p
-    bool le(const SFP& p) const;        // x <= p
+    bool eq(const SFP& s) const;        // x == s
+    bool gt(const SFP& s) const;        // x > s
+    bool ge(const SFP& s) const;        // x >= s
+    bool lt(const SFP& s) const;        // x < s
+    bool le(const SFP& s) const;        // x <= s
 
-    void set(SFP p);                    // x = p
+    void set(SFP s);                    // x = s
     void set(float n);                  // x = n
     void set(double n);                 // x = n
 

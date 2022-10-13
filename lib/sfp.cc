@@ -1,5 +1,7 @@
 #include "sfp.hh"
-#include "utils.hh"
+#include "utils.h"
+#include "pack.h"
+#include "op.h"
 
 #include <cstdio>
 #include <cmath>
@@ -20,22 +22,37 @@ SFP::SFP(int es, int fs) :
 
 bool SFP::isZero() const
 {
-    return (LHIDE(LMASK(bits, es + 1), 1) == SFP_ZERO);
+    return util_is_zero(bits, es);
 }
 
 bool SFP::isNeg() const
 {
-    return ((SFP_STYPE)bits < 0);
+    return util_is_neg(bits);
 }
 
 int SFP::nBits() const
 {
-    return (1 + es + fs);
+    return util_sfp_nbits(es, fs);
 }
 
 int SFP::bias() const
 {
-    return (POW2(es - 1));
+    return util_sfp_bias(es);
+}
+
+bool SFP::sign() const
+{
+    return util_sfp_sign(bits);
+}
+
+SFP_STYPE SFP::exp() const
+{
+    return util_sfp_exp(bits, es, fs);
+}
+
+SFP_UTYPE SFP::frac() const
+{
+    return util_sfp_frac(bits, es, fs);
 }
 
 SFP SFP::zero() const
@@ -73,16 +90,43 @@ SFP SFP::abs() const
     return (isNeg() ? neg() : *this);
 }
 
-// SFP SFP::add(const SFP& p) const
-// {
-//     if(isZero()) {
-//         return p;
-//     } else if (p.isZero()) {
-//         return *this;
-//     } else if (neg().eq(p)) {
-//         return zero();
-//     }
-// }
+SFP SFP::add(const SFP& s) const
+{
+    if(isZero()) {
+        return s;
+    } else if (s.isZero()) {
+        return *this;
+    } else if (neg().eq(s)) {
+        return zero();
+    }
+
+    unpacked_t ua = unpack_sfp(bits, es, fs);
+    unpacked_t ub = unpack_sfp(s.bits, s.es, s.fs);
+    unpacked_t ur = op_add(ua, ub);
+
+    return SFP(pack_sfp(ur, es, fs), es, fs);
+}
+
+SFP SFP::mul(const SFP& s) const
+{
+    if (isZero() || s.isZero()) {
+        return zero();
+    }
+
+    unpacked_t ua = unpack_sfp(bits, es, fs);
+    unpacked_t ub = unpack_sfp(s.bits, s.es, s.fs);
+    unpacked_t ur = op_mul(ua, ub);
+
+    return SFP(pack_sfp(ur, es + 1, fs), es + 1, fs);
+}
+
+bool SFP::eq(const SFP& s) const
+{
+    if (isZero() && s.isZero()) {
+        return true;
+    }
+    return (bits == s.bits);
+}
 
 float SFP::getFloat() const
 {
@@ -102,19 +146,19 @@ float SFP::getFloat() const
         float f;
         uint32_t u;
     } un;
-    
+
     un.u = fsign | fexp | ffrac;
     return un.f;
 }
 
-void SFP::setBits(SFP_UTYPE b)
+void SFP::setBits(SFP_UTYPE s)
 {
-    bits = LSHIFT(b, SFP_WIDTH - nBits());
+    bits = LSHIFT(s, SFP_WIDTH - nBits());
 }
 
 void SFP::print() const
 {
-    SFP p = abs();
+    SFP s = abs();
 
     printf("sfp<%d,%d> ", es, fs);
 
@@ -126,13 +170,13 @@ void SFP::print() const
     printf(isNeg() ? "-" : "+");
 
     for (int i = SFP_WIDTH - 2; i >= SFP_WIDTH - nBits(); i--) {
-        printf("%d", RSHIFT(p.bits, i) & 1);
-        if (i != SFP_WIDTH - nBits() && (i == SFP_WIDTH - 1 - p.es)) {
+        printf("%d", RSHIFT(s.bits, i) & 1);
+        if (i != SFP_WIDTH - nBits() && (i == SFP_WIDTH - 1 - s.es)) {
             printf(" ");
         }
     }
 
     printf(" = %g", getFloat());
-    // printf(" bias: %d", bias());
+    printf(" (sign: %d, exp: %d, frac: %d(%x))", sign(), exp(), RSHIFT(frac(), SFP_WIDTH - fs), frac());
     printf("\n");
 }
