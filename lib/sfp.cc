@@ -107,6 +107,23 @@ SFP SFP::add(const SFP& s) const
     return SFP(pack_sfp(ur, es, fs), es, fs);
 }
 
+SFP SFP::sub(const SFP& s) const
+{
+    if(isZero()) {
+        return s.neg();
+    } else if (s.isZero()) {
+        return *this;
+    } else if (eq(s)) {
+        return zero();
+    }
+
+    unpacked_t ua = unpack_sfp(bits, es, fs);
+    unpacked_t ub = unpack_sfp(s.bits, s.es, s.fs);
+    unpacked_t ur = op_sub(ua, ub);
+
+    return SFP(pack_sfp(ur, es, fs), es, fs);
+}
+
 SFP SFP::mul(const SFP& s) const
 {
     if (isZero() || s.isZero()) {
@@ -154,6 +171,11 @@ float SFP::getFloat() const
 void SFP::setBits(SFP_UTYPE s)
 {
     bits = LSHIFT(s, SFP_WIDTH - nBits());
+}
+
+SFP_UTYPE SFP::getBits() const
+{
+    return RSHIFT(bits, SFP_WIDTH - nBits());
 }
 
 void SFP::print() const

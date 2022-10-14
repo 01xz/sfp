@@ -19,6 +19,7 @@ public:
 
     int nBits() const;
     int bias() const;
+
     bool sign() const;
     SFP_STYPE exp() const;
     SFP_UTYPE frac() const;
