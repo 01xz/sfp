@@ -9,6 +9,7 @@ extern "C" {
 #include "utils.h"
 
 unpacked_t op_add(unpacked_t a, unpacked_t b);
+unpacked_t op_sub(unpacked_t a, unpacked_t b);
 unpacked_t op_mul(unpacked_t a, unpacked_t b);
 
 #ifdef __cplusplus

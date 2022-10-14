@@ -34,6 +34,11 @@ extern "C" {
 #define HIDDEN_BIT(frac) \
     (SFP_MSB | RSHIFT((frac), 1))
 
+#ifdef __GNUC__
+#define CLZ(n) \
+    ((n) == 0 ? 8 * sizeof(n) : __builtin_clz(n))
+#endif
+
 bool util_is_zero(SFP_UTYPE s, int es);
 bool util_is_neg(SFP_UTYPE s);
 

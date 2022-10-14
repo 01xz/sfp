@@ -2,12 +2,56 @@
 
 unpacked_t add(unpacked_t a, unpacked_t b, bool sign)
 {
+    unpacked_t r;
 
+    SFP_LUTYPE afrac = HIDDEN_BIT(a.frac);
+    SFP_LUTYPE bfrac = HIDDEN_BIT(b.frac);
+    SFP_LUTYPE frac;
+
+    if (a.exp > b.exp) {
+        r.exp = a.exp;
+        bfrac = RSHIFT(bfrac, a.exp - b.exp);
+    } else {
+        r.exp = b.exp;
+        afrac = RSHIFT(afrac, b.exp - a.exp);
+    }
+
+    frac = afrac + bfrac;
+    if (RSHIFT(frac, SFP_WIDTH) != 0) {
+        r.exp++;
+        frac = RSHIFT(frac, 1);
+    }
+
+    r.sign = sign;
+    r.frac = LSHIFT(frac, 1);
+
+    return r;
 }
 
 unpacked_t sub(unpacked_t a, unpacked_t b, bool sign)
 {
+    unpacked_t r;
 
+    SFP_UTYPE afrac = HIDDEN_BIT(a.frac);
+    SFP_UTYPE bfrac = HIDDEN_BIT(b.frac);
+    SFP_UTYPE frac;
+
+    if (a.exp > b.exp || (a.exp == b.exp && a.frac > b.frac)) {
+        r.exp = a.exp;
+        bfrac = RSHIFT(bfrac, a.exp - b.exp);
+        frac = afrac - bfrac;
+    } else {
+        sign = !sign;
+        r.exp = b.exp;
+        afrac = RSHIFT(afrac, b.exp - a.exp);
+        frac = bfrac - afrac;
+    }
+
+    r.sign = sign;
+    r.exp -= CLZ(frac);
+    r.frac = LSHIFT(frac, CLZ(frac) + 1);
+
+    return r;
 }
 
 unpacked_t op_add(unpacked_t a, unpacked_t b)
@@ -19,12 +63,12 @@ unpacked_t op_add(unpacked_t a, unpacked_t b)
     }
 }
 
-unpacked_t op_eadd(unpacked_t a, unpacked_t b)
+unpacked_t op_sub(unpacked_t a, unpacked_t b)
 {
     if (a.sign == b.sign) {
-        return add(a, b, a.sign);
-    } else {
         return sub(a, b, a.sign);
+    } else {
+        return add(a, b, a.sign);
     }
 }
 

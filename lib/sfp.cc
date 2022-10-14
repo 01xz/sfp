@@ -104,7 +104,7 @@ SFP SFP::add(const SFP& s) const
     unpacked_t ub = unpack_sfp(s.bits, s.es, s.fs);
     unpacked_t ur = op_add(ua, ub);
 
-    return SFP(pack_sfp(ur, es, fs), es, fs);
+    return SFP(pack_sfp(ur, es + 1, fs), es + 1, fs);
 }
 
 SFP SFP::sub(const SFP& s) const
@@ -121,7 +121,7 @@ SFP SFP::sub(const SFP& s) const
     unpacked_t ub = unpack_sfp(s.bits, s.es, s.fs);
     unpacked_t ur = op_sub(ua, ub);
 
-    return SFP(pack_sfp(ur, es, fs), es, fs);
+    return SFP(pack_sfp(ur, es + 1, fs), es + 1, fs);
 }
 
 SFP SFP::mul(const SFP& s) const
