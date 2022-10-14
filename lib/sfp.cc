@@ -188,3 +188,23 @@ void SFP::print() const
     // printf(" (sign: %d, exp: %d, frac: %d(%x))", sign(), exp(), RSHIFT(frac(), SFP_WIDTH - fs), frac());
     printf("\n");
 }
+
+SFP operator+(const SFP& a, const SFP& b)
+{
+    return a.add(b);
+}
+
+SFP operator-(const SFP& a, const SFP& b)
+{
+    return a.sub(b);
+}
+
+SFP operator*(const SFP& a, const SFP& b)
+{
+    return a.mul(b);
+}
+
+SFP operator-(const SFP& a)
+{
+    return a.neg();
+}

@@ -66,4 +66,18 @@ public:
     SFP33(double v);
 };
 
+SFP operator+(const SFP& a, const SFP& b);
+SFP operator-(const SFP& a, const SFP& b);
+SFP operator*(const SFP& a, const SFP& b);
+SFP operator/(const SFP& a, const SFP& b);
+
+SFP operator-(const SFP& a);
+
+bool operator<(const SFP&a , const SFP& b);
+bool operator<=(const SFP&a , const SFP& b);
+bool operator>(const SFP&a , const SFP& b);
+bool operator>=(const SFP&a , const SFP& b);
+bool operator==(const SFP&a , const SFP& b);
+bool operator!=(const SFP&a , const SFP& b);
+
 #endif
