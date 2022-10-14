@@ -15,6 +15,7 @@ typedef struct {
 
 SFP_UTYPE pack_sfp(unpacked_t us, int es, int fs);
 float pack_float(unpacked_t us);
+double pack_double(unpacked_t us);
 
 unpacked_t unpack_sfp(SFP_UTYPE s, int es, int fs);
 

@@ -25,6 +25,21 @@ float pack_float(unpacked_t us)
     return un.f;
 }
 
+double pack_double(unpacked_t us)
+{
+    uint64_t fsign = us.sign ? LSHIFT((uint64_t)SFP_MSB, 32) : LSHIFT((uint64_t)SFP_ZERO, 32);
+    uint64_t fexp = LSHIFT((uint64_t)(us.exp + 1023), 52);
+    uint64_t ffrac = RSHIFT(LSHIFT((uint64_t)us.frac, 32), 1 + 11);
+
+    union {
+        double d;
+        uint64_t u;
+    } un;
+
+    un.u = fsign | fexp | ffrac;
+    return un.d;
+}
+
 unpacked_t unpack_sfp(SFP_UTYPE s, int es, int fs)
 {
     unpacked_t us;

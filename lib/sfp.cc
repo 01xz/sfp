@@ -90,6 +90,13 @@ SFP SFP::abs() const
     return (isNeg() ? neg() : *this);
 }
 
+SFP SFP::resize(int es, int fs) const
+{
+    auto r = SFP(es, fs);
+    // xx
+    return r;
+}
+
 SFP SFP::add(const SFP& s) const
 {
     if(isZero()) {
@@ -152,6 +159,15 @@ float SFP::getFloat() const
     }
 
     return pack_float(unpack_sfp(bits, es, fs));
+}
+
+double SFP::getDouble() const
+{
+    if (isZero()) {
+        return 0.0;
+    }
+
+    return pack_double(unpack_sfp(bits, es, fs));
 }
 
 void SFP::setBits(SFP_UTYPE s)
