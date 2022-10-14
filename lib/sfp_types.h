@@ -8,15 +8,15 @@ extern "C" {
 #include <stdint.h>
 #include <stdbool.h>
 
-#define SFP_LUTYPE    uint32_t
-#define SFP_UTYPE     uint16_t
-#define SFP_STYPE     int16_t
-#define SFP_WIDTH     16
-#define SFP_ZERO      ((SFP_UTYPE)0x0000)
-#define SFP_MAX       ((SFP_UTYPE)0x7FFF)
-#define SFP_MIN       ((SFP_UTYPE)0x0001)
-#define SFP_MSB       ((SFP_UTYPE)0x8000)
-#define SFP_MASK      ((SFP_UTYPE)0xFFFF)
+#define SFP_LUTYPE    uint64_t
+#define SFP_UTYPE     uint32_t
+#define SFP_STYPE     int32_t
+#define SFP_WIDTH     32
+#define SFP_ZERO      ((SFP_UTYPE)0x00000000)
+#define SFP_MAX       ((SFP_UTYPE)0x7FFFFFFF)
+#define SFP_MIN       ((SFP_UTYPE)0x00000001)
+#define SFP_MSB       ((SFP_UTYPE)0x80000000)
+#define SFP_MASK      ((SFP_UTYPE)0xFFFFFFFF)
 
 #ifdef __cplusplus
 }

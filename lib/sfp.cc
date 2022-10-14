@@ -104,7 +104,7 @@ SFP SFP::add(const SFP& s) const
     unpacked_t ub = unpack_sfp(s.bits, s.es, s.fs);
     unpacked_t ur = op_add(ua, ub);
 
-    return SFP(pack_sfp(ur, es + 1, fs), es + 1, fs);
+    return SFP(pack_sfp(ur, es + 1, fs + 1), es + 1, fs + 1);
 }
 
 SFP SFP::sub(const SFP& s) const
@@ -121,7 +121,7 @@ SFP SFP::sub(const SFP& s) const
     unpacked_t ub = unpack_sfp(s.bits, s.es, s.fs);
     unpacked_t ur = op_sub(ua, ub);
 
-    return SFP(pack_sfp(ur, es + 1, fs), es + 1, fs);
+    return SFP(pack_sfp(ur, es + 1, fs + 1), es + 1, fs + 1);
 }
 
 SFP SFP::mul(const SFP& s) const
@@ -134,7 +134,7 @@ SFP SFP::mul(const SFP& s) const
     unpacked_t ub = unpack_sfp(s.bits, s.es, s.fs);
     unpacked_t ur = op_mul(ua, ub);
 
-    return SFP(pack_sfp(ur, es + 1, fs), es + 1, fs);
+    return SFP(pack_sfp(ur, es + 1, fs + 1), es + 1, fs + 1);
 }
 
 bool SFP::eq(const SFP& s) const
@@ -151,21 +151,7 @@ float SFP::getFloat() const
         return 0.0;
     }
 
-    uint32_t fsign;
-    uint32_t fexp;
-    uint32_t ffrac;
-
-    fsign = LMASK(bits, 1) << 16;
-    fexp = ((LHIDE(bits, 1) >> (SFP_WIDTH - (es + 1))) + 127 - bias()) << 23;
-    ffrac = LHIDE(bits, es + 1) << (23 - (SFP_WIDTH - (es + 1)));
-
-    union {
-        float f;
-        uint32_t u;
-    } un;
-
-    un.u = fsign | fexp | ffrac;
-    return un.f;
+    return pack_float(unpack_sfp(bits, es, fs));
 }
 
 void SFP::setBits(SFP_UTYPE s)
@@ -199,6 +185,6 @@ void SFP::print() const
     }
 
     printf(" = %g", getFloat());
-    printf(" (sign: %d, exp: %d, frac: %d(%x))", sign(), exp(), RSHIFT(frac(), SFP_WIDTH - fs), frac());
+    // printf(" (sign: %d, exp: %d, frac: %d(%x))", sign(), exp(), RSHIFT(frac(), SFP_WIDTH - fs), frac());
     printf("\n");
 }

@@ -10,6 +10,21 @@ SFP_UTYPE pack_sfp(unpacked_t us, int es, int fs)
     return (sign | exp | frac);
 }
 
+float pack_float(unpacked_t us)
+{
+    uint32_t fsign = us.sign ? SFP_MSB : SFP_ZERO;
+    uint32_t fexp = LHIDE(LSHIFT(us.exp + 127, 23), 1);
+    uint32_t ffrac = RSHIFT(us.frac, 1 + 8);
+
+    union {
+        float f;
+        uint32_t u;
+    } un;
+
+    un.u = fsign | fexp | ffrac;
+    return un.f;
+}
+
 unpacked_t unpack_sfp(SFP_UTYPE s, int es, int fs)
 {
     unpacked_t us;
