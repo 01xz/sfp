@@ -69,11 +69,6 @@ unpacked_t unpack_float(float n)
     us.exp = (RSHIFT(un.u, 23) & 0xFF) - 127;
     us.frac = LSHIFT(un.u, 1 + 8);
 
-    if (us.exp == -127) {
-        us.exp -= CLZ(us.frac);
-        us.frac = LSHIFT(us.frac, CLZ(us.frac) + 1);
-    }
-
     return us;
 }
 
@@ -91,11 +86,6 @@ unpacked_t unpack_double(double n)
     us.sign = RSHIFT(un.u, 63);
     us.exp = (RSHIFT(un.u, 52) & 0x7FF) - 1023;
     us.frac = RSHIFT(LSHIFT(un.u, 12), 64 - SFP_WIDTH);
-
-    if (us.exp == -1023) {
-        us.exp -= CLZ(us.frac);
-        us.frac = LSHIFT(us.frac, CLZ(us.frac) + 1);
-    }
 
     return us;
 }
