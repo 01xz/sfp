@@ -90,13 +90,6 @@ SFP SFP::abs() const
     return (isNeg() ? neg() : *this);
 }
 
-SFP SFP::resize(int es, int fs) const
-{
-    auto r = SFP(es, fs);
-    // xx
-    return r;
-}
-
 SFP SFP::add(const SFP& s) const
 {
     if(isZero()) {
@@ -150,6 +143,43 @@ bool SFP::eq(const SFP& s) const
         return true;
     }
     return (bits == s.bits);
+}
+
+void SFP::set(SFP s)
+{
+    bits = pack_sfp(unpack_sfp(s.bits, s.es, s.fs), es, fs);
+}
+
+void SFP::set(float n)
+{
+    switch (fpclassify(n)) {
+        case FP_INFINITE:
+        case FP_NAN:
+            bits = SFP_MAX;
+            break;
+        case FP_ZERO:
+        case FP_SUBNORMAL:
+            bits = SFP_ZERO;
+            break;
+        default:
+            bits = pack_sfp(unpack_float(n), es, fs);
+    }
+}
+
+void SFP::set(double n)
+{
+    switch (fpclassify(n)) {
+        case FP_INFINITE:
+        case FP_NAN:
+            bits = SFP_MAX;
+            break;
+        case FP_ZERO:
+        case FP_SUBNORMAL:
+            bits = SFP_ZERO;
+            break;
+        default:
+            bits = pack_sfp(unpack_double(n), es, fs);
+    }
 }
 
 float SFP::getFloat() const
