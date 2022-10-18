@@ -272,7 +272,7 @@ void SFP::print() const
     }
 
     printf(" = %g", getFloat());
-    // printf(" (sign: %d, exp: %d, frac: %d(%x))", sign(), exp(), RSHIFT(frac(), SFP_WIDTH - fs), frac());
+
     printf("\n");
 }
 
