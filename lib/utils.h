@@ -47,7 +47,13 @@ int util_sfp_nbits(int es, int fs);
 
 bool util_sfp_sign(SFP_UTYPE s);
 SFP_STYPE util_sfp_exp(SFP_UTYPE s, int es, int fs);
+SFP_UTYPE util_sfp_exp_max(int es);
 SFP_UTYPE util_sfp_frac(SFP_UTYPE s, int es, int fs);
+
+SFP_UTYPE util_sfp_max(int es, int fs);
+SFP_UTYPE util_sfp_min(int es);
+
+SFP_UTYPE util_sfp_neg(SFP_UTYPE s);
 
 #ifdef __cplusplus
 }

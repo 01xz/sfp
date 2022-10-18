@@ -32,6 +32,8 @@ public:
 
     SFP neg() const;
     SFP abs() const;
+    SFP prev() const;
+    SFP next() const;
 
     SFP add(const SFP& s) const;        // x + s
     SFP sub(const SFP& s) const;        // x - s
@@ -44,15 +46,17 @@ public:
     bool lt(const SFP& s) const;        // x < s
     bool le(const SFP& s) const;        // x <= s
 
-    void set(SFP s);                    // x = s
-    void set(float n);                  // x = n
-    void set(double n);                 // x = n
+    SFP& set(SFP s);                    // x = s
+    SFP& set(float n);                  // x = n
+    SFP& set(double n);                 // x = n
+
+    SFP& resizeTo(int es, int fs);
 
     float getFloat() const;             // n = x
     double getDouble() const;           // n = x
 
     // debug
-    void setBits(SFP_UTYPE bits);
+    SFP& setBits(SFP_UTYPE bits);
     SFP_UTYPE getBits() const;
     void print() const;
 };
@@ -73,11 +77,11 @@ SFP operator/(const SFP& a, const SFP& b);
 
 SFP operator-(const SFP& a);
 
-bool operator<(const SFP&a , const SFP& b);
-bool operator<=(const SFP&a , const SFP& b);
-bool operator>(const SFP&a , const SFP& b);
-bool operator>=(const SFP&a , const SFP& b);
-bool operator==(const SFP&a , const SFP& b);
-bool operator!=(const SFP&a , const SFP& b);
+bool operator<(const SFP& a, const SFP& b);
+bool operator<=(const SFP& a, const SFP& b);
+bool operator>(const SFP& a, const SFP& b);
+bool operator>=(const SFP& a, const SFP& b);
+bool operator==(const SFP& a, const SFP& b);
+bool operator!=(const SFP& a, const SFP& b);
 
 #endif

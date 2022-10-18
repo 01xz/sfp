@@ -31,8 +31,28 @@ SFP_STYPE util_sfp_exp(SFP_UTYPE s, int es, int fs)
     return (exp - util_sfp_bias(es));
 }
 
+SFP_UTYPE util_sfp_exp_max(int es)
+{
+    return (SFP_UTYPE)(POW2(es) - 1);
+}
+
 SFP_UTYPE util_sfp_frac(SFP_UTYPE s, int es, int fs)
 {
     SFP_UTYPE frac = LSHIFT(s, (1 + es));
     return frac;
+}
+
+SFP_UTYPE util_sfp_max(int es, int fs)
+{
+    return LMASK(SFP_MAX, (1 + es + fs));
+}
+
+SFP_UTYPE util_sfp_min(int es)
+{
+    return LSHIFT(SFP_MIN, SFP_WIDTH - (es + 1));
+}
+
+SFP_UTYPE util_sfp_neg(SFP_UTYPE s)
+{
+    return (s ^ SFP_MSB);
 }

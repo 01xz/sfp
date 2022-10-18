@@ -4,7 +4,16 @@
 SFP_UTYPE pack_sfp(unpacked_t us, int es, int fs)
 {
     SFP_UTYPE sign = us.sign ? SFP_MSB : SFP_ZERO;
-    SFP_UTYPE exp = LHIDE(LSHIFT(us.exp + util_sfp_bias(es), SFP_WIDTH - (1 + es)), 1);
+
+    SFP_STYPE ubexp = us.exp + util_sfp_bias(es);
+    // printf("pack_sfp: exp: %d, unbiased exp: %d\n", us.exp, ubexp);
+    if (ubexp > (SFP_STYPE)util_sfp_exp_max(es)) {
+        return (sign | util_sfp_max(es, fs));
+    } else if (ubexp <= 0) {
+        return SFP_ZERO;
+    }
+
+    SFP_UTYPE exp = LHIDE(LSHIFT(ubexp, SFP_WIDTH - (1 + es)), 1);
     SFP_UTYPE frac = LMASK(RSHIFT(us.frac, 1 + es), (1 + es + fs));
 
     return (sign | exp | frac);

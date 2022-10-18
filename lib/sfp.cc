@@ -62,12 +62,12 @@ SFP SFP::zero() const
 
 SFP SFP::absMax() const
 {
-    return SFP(LMASK(SFP_MAX, nBits()), es, fs);
+    return SFP(util_sfp_max(es, fs), es, fs);
 }
 
 SFP SFP::absMin() const
 {
-    return SFP(LSHIFT(SFP_MIN, SFP_WIDTH - (es + 1)), es, fs);
+    return SFP(util_sfp_min(es), es, fs);
 }
 
 SFP SFP::max() const
@@ -82,12 +82,36 @@ SFP SFP::min() const
 
 SFP SFP::neg() const
 {
-    return SFP(bits ^ SFP_MSB, es, fs);
+    return SFP(util_sfp_neg(bits), es, fs);
 }
 
 SFP SFP::abs() const
 {
     return (isNeg() ? neg() : *this);
+}
+
+SFP SFP::prev() const
+{
+    if (isZero()) {
+        return absMin().neg();
+    } else if (*this == min()) {
+        return min();
+    }
+
+    SFP_UTYPE prevbits = isNeg() ? getBits() + 1 : getBits() - 1;
+    return SFP(LSHIFT(prevbits, SFP_WIDTH - nBits()), es, fs);
+}
+
+SFP SFP::next() const
+{
+    if (isZero()) {
+        return absMin();
+    } else if (*this == max()) {
+        return max();
+    }
+
+    SFP_UTYPE nextbits = isNeg() ? getBits() - 1 : getBits() + 1;
+    return SFP(LSHIFT(nextbits, SFP_WIDTH - nBits()), es, fs);
 }
 
 SFP SFP::add(const SFP& s) const
@@ -142,15 +166,16 @@ bool SFP::eq(const SFP& s) const
     if (isZero() && s.isZero()) {
         return true;
     }
-    return (bits == s.bits);
+    return (bits == s.bits && es == s.es && fs == s.fs);
 }
 
-void SFP::set(SFP s)
+SFP& SFP::set(SFP s)
 {
     bits = pack_sfp(unpack_sfp(s.bits, s.es, s.fs), es, fs);
+    return *this;
 }
 
-void SFP::set(float n)
+SFP& SFP::set(float n)
 {
     switch (fpclassify(n)) {
         case FP_INFINITE:
@@ -164,9 +189,10 @@ void SFP::set(float n)
         default:
             bits = pack_sfp(unpack_float(n), es, fs);
     }
+    return *this;
 }
 
-void SFP::set(double n)
+SFP& SFP::set(double n)
 {
     switch (fpclassify(n)) {
         case FP_INFINITE:
@@ -180,6 +206,20 @@ void SFP::set(double n)
         default:
             bits = pack_sfp(unpack_double(n), es, fs);
     }
+    return *this;
+}
+
+SFP& SFP::resizeTo(int es, int fs)
+{
+    if (isZero()) {
+        this->bits = SFP_ZERO;
+    } else {
+        this->bits = pack_sfp(unpack_sfp(this->bits, this->es, this->fs), es, fs);
+    }
+    this->es = es;
+    this->fs = fs;
+
+    return *this;
 }
 
 float SFP::getFloat() const
@@ -200,9 +240,10 @@ double SFP::getDouble() const
     return pack_double(unpack_sfp(bits, es, fs));
 }
 
-void SFP::setBits(SFP_UTYPE s)
+SFP& SFP::setBits(SFP_UTYPE s)
 {
     bits = LSHIFT(s, SFP_WIDTH - nBits());
+    return *this;
 }
 
 SFP_UTYPE SFP::getBits() const
@@ -253,4 +294,9 @@ SFP operator*(const SFP& a, const SFP& b)
 SFP operator-(const SFP& a)
 {
     return a.neg();
+}
+
+bool operator==(const SFP& a , const SFP& b)
+{
+    return a.eq(b);
 }
