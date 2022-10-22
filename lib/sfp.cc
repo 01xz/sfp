@@ -178,16 +178,17 @@ SFP& SFP::set(SFP s)
 SFP& SFP::set(float n)
 {
     switch (fpclassify(n)) {
-        case FP_INFINITE:
-        case FP_NAN:
-            bits = SFP_MAX;
-            break;
-        case FP_ZERO:
-        case FP_SUBNORMAL:
-            bits = SFP_ZERO;
-            break;
-        default:
-            bits = pack_sfp(unpack_float(n), es, fs);
+    case FP_INFINITE:
+    case FP_NAN:
+        bits = SFP_MAX;
+        break;
+    case FP_ZERO:
+    case FP_SUBNORMAL:
+        bits = SFP_ZERO;
+        break;
+    default:
+        bits = pack_sfp(unpack_float(n), es, fs);
+        break;
     }
     return *this;
 }
@@ -195,16 +196,17 @@ SFP& SFP::set(float n)
 SFP& SFP::set(double n)
 {
     switch (fpclassify(n)) {
-        case FP_INFINITE:
-        case FP_NAN:
-            bits = SFP_MAX;
-            break;
-        case FP_ZERO:
-        case FP_SUBNORMAL:
-            bits = SFP_ZERO;
-            break;
-        default:
-            bits = pack_sfp(unpack_double(n), es, fs);
+    case FP_INFINITE:
+    case FP_NAN:
+        bits = SFP_MAX;
+        break;
+    case FP_ZERO:
+    case FP_SUBNORMAL:
+        bits = SFP_ZERO;
+        break;
+    default:
+        bits = pack_sfp(unpack_double(n), es, fs);
+        break;
     }
     return *this;
 }
